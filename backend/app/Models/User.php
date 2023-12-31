@@ -17,11 +17,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -29,13 +25,19 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $hidden = [
-        'password',
+        'login_code',
         'remember_token',
     ];
-    public function driver(){
+    public function routeNotificationFor()
+    {
+        return $this->phone;
+    }
+    public function driver()
+    {
         return $this->hasOne(Driver::class);
     }
-    public function trips(){
+    public function trips()
+    {
         return $this->hasMany(Trip::class);
     }
 }
