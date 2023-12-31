@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 class DriverController extends Controller
 {
     //
@@ -16,15 +16,18 @@ class DriverController extends Controller
 
     public function update(Request $request)
     {
-        $request->validate([
+
+        $validater = Validator::make($request->all(),[
             'name' => 'required',
             'year' => 'required|numeric|between:2000,2024',
             'license_plate' => 'required',
             'make' => 'required',
             'model' => 'required',
             'color' => 'required',
-
         ]);
+        if($validater->fails()){
+            return response()->json($validater->errors()->all(), 422);
+        }
         $user = $request->user();
         $user->update($request->only('name'));
         // create driver or update

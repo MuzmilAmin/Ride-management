@@ -11,10 +11,9 @@ class LoginController extends Controller
 {
     //
 
-    public function login(Request $request)
-    {
-        $validater = Validator::make($request->all(), [
-            'phone' => 'required|numeric|min:13'
+    public function login(Request $request){
+        $validater = Validator::make($request->all(),[
+            'phone' => 'required|min:13|numeric'
         ]);
         if ($validater->fails()) {
             return response()->json($validater->errors()->all(), 422);
@@ -24,7 +23,7 @@ class LoginController extends Controller
         ]);
         if (!$user) {
             return response()->json([
-                'message' => 'Could not process user with that phone number'
+                'message' => 'Could not process user with that  phone number '
             ]);
         }
         $user->notify(new LoginNeedVarifaction());
@@ -33,29 +32,22 @@ class LoginController extends Controller
             'message' => 'Login code sent to ' . $user->phone
         ]);
     }
-
-    public function verify(Request $request)
-    {
-        // validate
-        // $request->validate([
-        //     'phone' => 'required|numeric|exists:users,phone',
-        //     'login_code' => 'required|numeric|between:1111,9999',
-        // ]);
-        $validater = Validator::make($request->all(), [
-            'phone' => 'required|numeric|exists:users,phone',
-            'login_code' => 'required|numeric|between:1111,9999',
+    public function verify(Request $request){
+        $validater = Validator::make($request->all(),[
+            'login_code' => 'required|numeric|between:1000,9999',
+            'phone' => 'required|min:13|numeric'
         ]);
+        if ($validater->fails()) {
+            return response()->json($validater->errors()->all(), 422);
+        }
         $user = User::where('phone', $request->phone)->where('login_code', $request->login_code)->first();
-        // is code provided is same as stored
-        // if so return back an auth token
-        if ($user) {
+        if($user){
             $user->update(['login_code' => null]);
             return $user->createToken($request->login_code)->plainTextToken;
         }
 
-        // if not return back error
         return response()->json([
-            'message' => 'Invalid varifaction code'
-        ], 401);
+            'message' => 'Invalid login code'
+        ], 422);
     }
 }
