@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Notifications\LoginNeedVarifaction;
+use Illuminate\Support\Facades\Validator;
 
 class LoginController extends Controller
 {
@@ -12,9 +13,12 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|numeric|exists:users,phone',
+        $validater = Validator::make($request->all(), [
+            'phone' => 'required|numeric|min:13'
         ]);
+        if ($validater->fails()) {
+            return response()->json($validater->errors()->all(), 422);
+        }
         $user = User::firstOrCreate([
             'phone' => $request->phone
         ]);
@@ -33,7 +37,11 @@ class LoginController extends Controller
     public function verify(Request $request)
     {
         // validate
-        $request->validate([
+        // $request->validate([
+        //     'phone' => 'required|numeric|exists:users,phone',
+        //     'login_code' => 'required|numeric|between:1111,9999',
+        // ]);
+        $validater = Validator::make($request->all(), [
             'phone' => 'required|numeric|exists:users,phone',
             'login_code' => 'required|numeric|between:1111,9999',
         ]);

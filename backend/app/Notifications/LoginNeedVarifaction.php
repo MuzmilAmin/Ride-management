@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -36,6 +37,7 @@ class LoginNeedVarifaction extends Notification
         $loginCode = rand(1000, 9999);
         $notifiable->update(['login_code' => $loginCode]);
         return (new TwilioSmsMessage())
+
             ->content('Your verification code is ' . $loginCode);
     }
 
