@@ -11,13 +11,15 @@ class LoginController extends Controller
 {
     //
 
-    public function login(Request $request){
-        $validater = Validator::make($request->all(),[
-            'phone' => 'required|min:13|numeric'
+    public function login(Request $request)
+    {
+        $request->validate([
+            'phone' => ['required', 'regex:/^\+92[0-9]{10}$/']
+        ], [
+            'phone.regex' => 'phone number must start with +92 and should be 12 digits'
         ]);
-        if ($validater->fails()) {
-            return response()->json($validater->errors()->all(), 422);
-        }
+
+
         $user = User::firstOrCreate([
             'phone' => $request->phone
         ]);
@@ -32,16 +34,14 @@ class LoginController extends Controller
             'message' => 'Login code sent to ' . $user->phone
         ]);
     }
-    public function verify(Request $request){
-        $validater = Validator::make($request->all(),[
-            'login_code' => 'required|numeric|between:1000,9999',
-            'phone' => 'required|min:13|numeric'
+    public function verify(Request $request)
+    {
+
+        $request->validate([
+            'login_code' => 'required',
         ]);
-        if ($validater->fails()) {
-            return response()->json($validater->errors()->all(), 422);
-        }
         $user = User::where('phone', $request->phone)->where('login_code', $request->login_code)->first();
-        if($user){
+        if ($user) {
             $user->update(['login_code' => null]);
             return $user->createToken($request->login_code)->plainTextToken;
         }

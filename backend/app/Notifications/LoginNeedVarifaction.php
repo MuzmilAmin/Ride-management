@@ -34,7 +34,7 @@ class LoginNeedVarifaction extends Notification
 
     public function toTwilio($notifiable)
     {
-        $loginCode = rand(1000, 9999);
+        $loginCode = rand(100000, 999999);
         $notifiable->update(['login_code' => $loginCode]);
         return (new TwilioSmsMessage())
 
