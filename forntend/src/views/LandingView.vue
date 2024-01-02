@@ -1,6 +1,6 @@
 <template>
   <div class="pt-16">
-    <h1 class="text-3xl font-semibold mb-4">Test</h1>
+    <h1 class="text-3xl font-semibold mb-4">Ride</h1>
     <div
       class="overflow-hidden shadow sm:rounded-md max-w-sm mx-auto text-left"
     >

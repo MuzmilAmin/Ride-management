@@ -119,7 +119,7 @@ const handlLogin = () => {
     .then((response) => {
       verify.value = true
     })
-    .catch((error) => (errors.phone = error.response.data.message))
+    .catch((error) =>  (errors.phone = error.response.data.errors.phone[0]))
 }
 const handlVerify = () => {
   axios
@@ -130,7 +130,7 @@ const handlVerify = () => {
         name: 'landing',
       })
     })
-    .catch((error) => (errors.login_code = error.response.data.message))
+    .catch((error) => (errors.login_code = error.response.data.errors.login_code[0]))
 }
 </script>
 <style></style>
