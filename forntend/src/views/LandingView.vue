@@ -12,6 +12,7 @@
             Start Ride
           </button>
           <button
+          @click.prevent="handleFindARide"
             class="text-white inline-flex justify-center rounded-md border border-transparent bg-black py-2"
           >
             Find Ride
@@ -21,5 +22,14 @@
     </div>
   </div>
 </template>
-<script setup></script>
+<script setup>
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
+
+const handleFindARide = () => {
+  router.push({ name: 'location' });
+}
+</script>
 <style></style>
